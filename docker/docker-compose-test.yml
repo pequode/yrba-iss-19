@@ -1,0 +1,31 @@
+services:
+  yrba:
+    image: 'dcpacky/yrba-official:latest'
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    command: "/app/release/yrba -c /app/config.toml"
+    volumes:
+      - ../config.toml:/app/config.toml
+      - ../tmp_folder:/backup
+      - ~/.ssh/:/auth
+    cap_add:
+      - SYS_ADMIN 
+    depends_on:
+      - nfs
+    environment:
+      ALLOWED_HOSTS: '*'
+
+  nfs:
+    image: itsthenetwork/nfs-server-alpine
+    hostname: nfs-docker
+    volumes:
+      - nfs-test:/nfsshare
+    environment:
+      - SHARED_DIRECTORY=/nfsshare
+      - PERMISSIONS=777
+    ports:
+      - 2049:2049
+      - 112:111
+volumes:
+  nfs-test: {}

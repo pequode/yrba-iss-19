@@ -2,7 +2,8 @@ FROM rust:1.91-alpine3.22
 
 ARG BUILD_DEPS="zlib-dev zlib-static musl-dev openssl-dev openssl-libs-static"
 
-RUN apk add $BUILD_DEPS
+# install build dependencies + nfs client
+RUN apk add --no-cache $BUILD_DEPS nfs-utils
 
 RUN mkdir /build && mkdir /app
 WORKDIR /build
